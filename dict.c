@@ -67,6 +67,8 @@ void addword(Trie t, char *s) {
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
 		if (t->next[index] == NULL) {
+			//create the new trie structure, X, that gets added onto t''
+			//see predicate unchangedAdd(t,t_0,s)
 			t->next[index] = malloc(sizeof(trie));
 			emptyTrieArray(t->next[index]);
 			t->next[index]->flag = FALSE;
@@ -92,6 +94,7 @@ boolean checkword(Trie t, char *s) {
 			b = checkword(t->next[index], s);
 		}
 	} else {
+		//P(t,s) is true if t->flag == true
 		if (t->flag == TRUE) { 
 			b = TRUE; 
 		} else {
@@ -108,6 +111,8 @@ void delword(Trie t, char *s) {
 		s++;
 		delword(t->next[index], s);
 	} else {
+		//changing the flag to flase
+		//see lastTrieOfString(t,s)
 		t->flag = FALSE;
 	}
 }
