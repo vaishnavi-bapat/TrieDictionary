@@ -51,15 +51,16 @@ int main(int argc, char const *argv[])
 
 void addword(Trie t, char *s) {
 	char currChar = s[0];
-	if (s[0] == '\0') {
+	if (s[0] != '\0') {
 		int index = convertToIndex(currChar);
-		char *newS = substring(s,1,strlen(s));
-		if (t->next[index] == NULL) {
+		char *truncatedS = truncate(s);
+		if (t.next[index] == NULL) {
 			Trie newT = malloc(sizeOf(Trie));
+			t.next[index] = &newT;
 		}
-		addword(t->next[index], newS);
+		addword(t.next[index], truncatedS);
 	} else {
-
+		t.flag = TRUE;
 	}
 }
 
@@ -69,7 +70,7 @@ boolean checkWord(Trie t, char *s) {
 		b = FALSE;
 	} else if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		char *truncatedS = substring(s, 1, strlen(s);
+		char *truncatedS = truncate(s);
 		Trie nextTrie = t.next[index];
 		b = checkWord(nextTrie, truncatedS);
 	} else {
@@ -78,7 +79,6 @@ boolean checkWord(Trie t, char *s) {
 		} else {
 			b = FALSE;
 		}
-
 	}
 	return b;
 }
