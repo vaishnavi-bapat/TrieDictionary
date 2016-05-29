@@ -43,8 +43,8 @@ typedef struct _trie *Trie;
 typedef struct _trie
 {
 	boolean flag;
-	Trie *next[26];
-} trie;
+	Trie next[26];
+}trie;
 
 void addword(Trie t, char *s);
 boolean checkword(Trie t, char *s);
@@ -58,7 +58,9 @@ int main(int argc, char const *argv[])
 {
 
 	//intialising dictionary (initDictA = <Flag:B, ntla>)
-	Trie dictionary = newEmptyTrie();//malloc(sizeof(Trie));
+	Trie dictionary = malloc(sizeof(*newEmptyTrie)); //newEmptyTrie();//malloc(sizeof(Trie));
+	printf("Initial node at: %p\n", &dictionary);
+
 	
 	char type = 'x';
 	
@@ -69,10 +71,12 @@ int main(int argc, char const *argv[])
 		scanf(" %c %s", &type, word);
 
 		if (type == 'a') {
+			printf("Calling addword at : %p\n", &dictionary);
 			addword(dictionary, word);
 		} 
 		if (type == 'c') {
 			boolean b = FALSE;
+			printf("Calling checkword at: %p\n", &dictionary);
 			b = checkword(dictionary, word);
 			if (b == FALSE) {
 				printf("%s is not known\n", word);
@@ -99,11 +103,11 @@ void addword(Trie t, char *s) {
 		s++;
 		if (t->next[index] == NULL) {
 			//printf("got here");
-			Trie newT = newEmptyTrie();//malloc(sizeof(Trie));
-			t->next[index] = &newT;
-			printf("After calling: %p\n", &newT);
-			assert(*t->next[index] == newT);
-			addword(*t->next[index], s);
+			Trie newT = malloc(sizeof(*newEmptyTrie));//newEmptyTrie();//malloc(sizeof(Trie));
+			t->next[index] = newT;
+			printf("Creating new node at: %p\n", &newT);
+			assert(t->next[index] == newT);
+			addword(t->next[index], s);
 		}
 	} else {
 		t->flag = TRUE;
@@ -118,12 +122,7 @@ boolean checkword(Trie t, char *s) {
 
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		printf("got here\n");
-		if (t == NULL) {
-			printf("null trie..\n");
-		} else {
-			printf("not null..\n");
-		}
+		printf("Checking node at: %p\n", &t->next[index]);
 		if (t->next[index] == NULL) {
 			printf("cond1\n");
 			b = FALSE;
@@ -131,7 +130,7 @@ boolean checkword(Trie t, char *s) {
 			printf("cond2\n");
 			//truncate(s);
 			s++;
-			b = checkword(*t->next[index], s);
+			b = checkword(t->next[index], s);
 		}
 	} else {
 		if (t->flag == TRUE) { 
@@ -157,10 +156,10 @@ void delword(Trie t, char *s) {
 	printf("%s\n", s);
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		truncate(s);
+		//truncate(s);
 		s++;
 		printf("got here!\n");
-		delword(*t->next[index], s);
+		delword(t->next[index], s);
 	} else {
 		t->flag = FALSE;
 		printf("Deleted!\n");
