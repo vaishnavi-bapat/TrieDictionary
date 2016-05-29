@@ -112,7 +112,7 @@ void delword(Trie t, char *s) {
 		delword(t->next[index], s);
 	} else {
 		//changing the flag to flase
-		//see lastTrieOfString(t,s)
+		//see predicate unchangedDel(t,t_0,s)
 		t->flag = FALSE;
 	}
 }
@@ -168,4 +168,3 @@ int convertToIndex(char c) {
 	if (c == 'z' || c == 'Z') { index = 25; }
 	return index;
 }
-
