@@ -27,10 +27,10 @@ int convertToIndex(char c);
 int main(int argc, char const *argv[])
 {
 
-	//intialising dictionary (initDictA = <Flag:B, ntla>)
+	//intialising dictionary (initDictA = <Flag:B, NETA>)
 	Trie dictionary = malloc(sizeof(trie));
-	emptyTrieArray(dictionary);
-	dictionary->flag = FALSE;
+	emptyTrieArray(dictionary);	//sets dictionary's next array to NETA
+	dictionary->flag = FALSE; 	//sets the flag to FALSE
 	
 	char type = 'x';
 	
@@ -63,61 +63,86 @@ int main(int argc, char const *argv[])
 
 
 //Procedure to add a word to the Trie dictionary
+//pre: {TRUE}
+//post: {P(t,s) && unchangedAdd(t,t0,s)}
 void addword(Trie t, char *s) {
 	if (s[0] != '\0') {
-		int index = convertToIndex(s[0]);
+		int index = convertToIndex(s[0]); //index sets the path for recursion to go through
+		//since it is properly mapped to from s[0], this will ensure that only the correct sequence of
+		//trie nodes (based on the characters of s) will be travelled to /new nodes created for.
 		if (t->next[index] == NULL) {
-			//create the new trie structure, X, that gets added onto t''
-			//see predicate unchangedAdd(t,t_0,s)
-			t->next[index] = malloc(sizeof(trie));
-			emptyTrieArray(t->next[index]);
-			t->next[index]->flag = FALSE;
+			t->next[index] = malloc(sizeof(trie)); 	//Creates a new trie node 
+			emptyTrieArray(t->next[index]);			//sets next array to NETA
+			t->next[index]->flag = FALSE;			//sets flag to FALSE
+				//flag is never set to true unless we've reached end of word
+				//this ensures we are never adding any new words to the dictionary
+				//and thus unchangedAdd(t,t0,s) holds.
 		} 
-		s++;
-		addword(t->next[index], s);
+		s++;	//truncates s (using pointer arithmetic)
+		addword(t->next[index], s); //recurses down the right path, as explained above
 	} else {
-		t->flag = TRUE;
+		// Only once s has been truncated to null character do we end up here
+		t->flag = TRUE; //At this point, because of all the above assertions, we would be at 
+						//the trie node that the last character's associated node is pointing at.
+						//Setting the flag to true adds it to the dictionary and P(t,s) holds.
 	}
 }
 
 //Function to check if a word exists in the Trie dictionary
+//pre: {TRUE}
+//post: {b <=> P(t,s)}
 boolean checkword(Trie t, char *s) {
 		
 	boolean b = FALSE;
 
 	if (s[0] != '\0') {
-		int index = convertToIndex(s[0]);
+		int index = convertToIndex(s[0]);//index sets the path for recursion to go through
+		//since it is properly mapped to from s[0], this will ensure that only the correct sequence of
+		//trie nodes (based on the characters of s) will be travelled to.
 		if (t->next[index] == NULL) {
-			b = FALSE;
+			b = FALSE;	//this is if we've hit a null, but the word hasn't ended yet, 
+						//hence the word does not exist in this trie representation
+						//and postcondition holds
 		} else {
-			s++;
-			b = checkword(t->next[index], s);
+			s++;	//truncates s (using pointer arithmetic)
+			b = checkword(t->next[index], s);	
+			//if not yet hit null, keep recursing down the trie (correctly, as explained above)
 		}
-	} else {
-		//P(t,s) is true if t->flag == true
+	} else {	//i.e. if (s[0] == '\0')
+		// Only once s has been truncated to null character do we end up here
 		if (t->flag == TRUE) { 
-			b = TRUE; 
+			b = TRUE; 	//this is if the representation of all the characters exists in the 
+						//right sequence and the flag is true, hence the word is in the dict
+						//and postcondition holds
 		} else {
-			b = FALSE;
+			b = FALSE;	//this is if the representation of all the characters exists in the 
+						//right sequence and the flag is false, hence the word is not in the dict
+						//and postcondition holds
 		}
 	}
 	return b;
 }
 
 //Procedure to delete a word from the Trie dictionary
+//Pre: {P(t,s)}
+//Post: {~P(t,s) && unchangedDel(t,t0,s)}
 void delword(Trie t, char *s) {
 	if (s[0] != '\0') {
-		int index = convertToIndex(s[0]);
-		s++;
-		delword(t->next[index], s);
+		int index = convertToIndex(s[0]);//index sets the path for recursion to go through
+		//since it is properly mapped to from s[0], this will ensure that only the correct sequence of
+		//trie nodes (based on the characters of s) will be travelled to.
+		s++;		//truncates s (using pointer arithmetic)
+		delword(t->next[index], s); //recurses down correct path
 	} else {
-		//changing the flag to flase
-		//see predicate unchangedDel(t,t_0,s)
-		t->flag = FALSE;
+		t->flag = FALSE;	//At this point, because of all the above assertions, we would be at 
+							//the trie node that s0's last character's associated node is pointing at.
+							//Setting the flag to false removes it from the dictionary and thus
+							//P(t,s) holds, and because we have only travelled down the right path 
+							//and no other flags change except this one, unchangedDel(t,t0,s) holds.
 	}
 }
 
-//procedure to initialise 
+//Function to set t's next array to NETA
 void emptyTrieArray(Trie t) {
 	//{I[0/i]}
 	int i = 0;
@@ -137,7 +162,7 @@ void emptyTrieArray(Trie t) {
 	// So by the end of the loop, when it exits, forall j\in[0,26), t->next[j] = NULL.
 }
 
-//function to return a letter's corresponding number between 0 and 26
+//function to return a letter's corresponding index between 0 and 26
 int convertToIndex(char c) {
 	int index = 0;
 	if (c == 'a' || c == 'A') { index = 0; }
@@ -168,3 +193,4 @@ int convertToIndex(char c) {
 	if (c == 'z' || c == 'Z') { index = 25; }
 	return index;
 }
+
