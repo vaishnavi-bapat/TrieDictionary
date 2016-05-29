@@ -61,6 +61,8 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
+
+//Procedure to add a word to the Trie dictionary
 void addword(Trie t, char *s) {
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
@@ -76,6 +78,7 @@ void addword(Trie t, char *s) {
 	}
 }
 
+//Function to check if a word exists in the Trie dictionary
 boolean checkword(Trie t, char *s) {
 		
 	boolean b = FALSE;
@@ -98,6 +101,7 @@ boolean checkword(Trie t, char *s) {
 	return b;
 }
 
+//Procedure to delete a word from the Trie dictionary
 void delword(Trie t, char *s) {
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
@@ -108,13 +112,16 @@ void delword(Trie t, char *s) {
 	}
 }
 
+//procedure to initialise 
 void emptyTrieArray(Trie t) {
 	int i = 0;
-	for (i = 0; i < 26; i++) {
+	while (i < 26) {
 		t->next[i] = NULL;
+		i++
 	}
 }
 
+//function to return a letter's corresponding number between 0 and 26
 int convertToIndex(char c) {
 	int index = 0;
 	if (c == 'a' || c == 'A') { index = 0; }
