@@ -83,6 +83,7 @@ int main(int argc, char const *argv[])
 			}
 		} 
 		if (type == 'd') {
+			printf("Calling delword at: %p\n", &dictionary);
 			delword(dictionary, word);
 		}
 
@@ -99,16 +100,15 @@ void addword(Trie t, char *s) {
 	//printf("%s\n", s);
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		truncate(s);
+		//truncate(s);
 		s++;
 		if (t->next[index] == NULL) {
-			//printf("got here");
-			Trie newT = malloc(sizeof(*newEmptyTrie));//newEmptyTrie();//malloc(sizeof(Trie));
-			t->next[index] = newT;
-			printf("Creating new node at: %p\n", &newT);
-			assert(t->next[index] == newT);
-			addword(t->next[index], s);
+			//Trie newT = malloc(sizeof(*newEmptyTrie));//newEmptyTrie();//malloc(sizeof(Trie));
+			t->next[index] = malloc(sizeof(*newEmptyTrie));
+			printf("Creating new node at: %p\n", &t->next[index]);
+			//assert(t->next[index] == newT);
 		}
+		addword(t->next[index], s);
 	} else {
 		t->flag = TRUE;
 	}
@@ -159,6 +159,7 @@ void delword(Trie t, char *s) {
 		//truncate(s);
 		s++;
 		printf("got here!\n");
+		printf("traversing node (for delword) at: %p\n", &t->next[index]);
 		delword(t->next[index], s);
 	} else {
 		t->flag = FALSE;
