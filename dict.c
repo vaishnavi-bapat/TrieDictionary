@@ -114,11 +114,22 @@ void delword(Trie t, char *s) {
 
 //procedure to initialise 
 void emptyTrieArray(Trie t) {
+	//{I[0/i]}
 	int i = 0;
-	while (i < 26) {
+	//{I}
+	while (i != 26) {
+		//{I && i < 26} 
+		//{I[i+1/i][t->next:i\mapsto NULL]}
 		t->next[i] = NULL;
-		i++
+		//{I[i+1/i]}
+		i = i + 1;
+		//{I}
 	}
+
+	// {I && i == 26}
+	// Invariant I is: 
+	// I = forall j\in[0,i) t->next[j] = NULL
+	// So by the end of the loop, when it exits, forall j\in[0,26), t->next[j] = NULL.
 }
 
 //function to return a letter's corresponding number between 0 and 26
