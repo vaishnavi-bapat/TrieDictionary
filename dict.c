@@ -58,7 +58,7 @@ int main(int argc, char const *argv[])
 {
 
 	//intialising dictionary (initDictA = <Flag:B, ntla>)
-	Trie dictionary = malloc(sizeof(*newEmptyTrie)); //newEmptyTrie();//malloc(sizeof(Trie));
+	Trie dictionary = malloc(sizeof(trie)); //newEmptyTrie();//malloc(sizeof(Trie));
 	printf("Initial node at: %p\n", &dictionary);
 
 	
@@ -100,14 +100,14 @@ void addword(Trie t, char *s) {
 	//printf("%s\n", s);
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		//truncate(s);
+		truncate(s);
 		s++;
 		if (t->next[index] == NULL) {
 			//Trie newT = malloc(sizeof(*newEmptyTrie));//newEmptyTrie();//malloc(sizeof(Trie));
-			t->next[index] = malloc(sizeof(*newEmptyTrie));
+			t->next[index] = malloc(sizeof(trie));
 			printf("Creating new node at: %p\n", &t->next[index]);
 			//assert(t->next[index] == newT);
-		}
+		} 
 		addword(t->next[index], s);
 	} else {
 		t->flag = TRUE;
