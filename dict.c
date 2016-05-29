@@ -140,10 +140,12 @@ void delword(Trie t, char *s) {
 	char currChar = s[0];
 	if (s[0] != '\0') {
 		int index = convertToIndex(currChar);
-		char *truncatedS = truncate(s);
-		delword(t.next[index], truncatedS);
+		//char *truncatedS = truncate(s);
+		truncate(s);
+		s++;
+		delword(*t->next[index], s);
 	} else {
-		t.flag = TRUE;
+		t->flag = FALSE;
 	}
 }
 
