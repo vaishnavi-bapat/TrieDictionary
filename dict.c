@@ -35,46 +35,99 @@
 #define Y 24
 #define Z 25
 
-typedef boolean int;
+typedef int boolean;
 
-struct Trie
+typedef struct _trie *Trie;
+
+typedef struct _trie
 {
 	boolean flag;
 	Trie *next[26];
-};
+} trie;
+
+void addword(Trie t, char *s);
+boolean checkword(Trie t, char *s);
+void delword(Trie t, char *s);
+//char * truncate(char *s);
+char * substring(char *s, int startingIndex, int length);
+int convertToIndex(char c);
+
+void truncate (char *s);
 
 int main(int argc, char const *argv[])
 {
-	/* code */
+
+	//should initialise to null since initD = < > 
+	Trie dictionary = NULL;// malloc(sizeof(Trie));
+
+	char type = 'x';
+	char *word = malloc(sizeof(char)*100);
+
+	while (type != 'q') {
+
+		scanf("%c %s", &type, word);
+		//scanf("%c", &type);
+		//scanf("%s", word);
+
+		if (type == 'a') {
+			addword(dictionary, word);
+		}
+
+		if (type == 'c') {
+			printf("here\n");
+			boolean b;
+			b = checkword(dictionary, word);
+			if (b == FALSE) {
+				printf("%s is not known\n", word);
+			}
+		}
+
+		if (type == 'd') {
+			delword(dictionary, word);
+		}
+
+		if (type == 'q') {
+			break;
+		}
+
+	}
+
 	return 0;
 }
 
 void addword(Trie t, char *s) {
+	printf("%s\n", s);
 	char currChar = s[0];
 	if (s[0] != '\0') {
 		int index = convertToIndex(currChar);
-		char *truncatedS = truncate(s);
-		if (t.next[index] == NULL) {
-			Trie newT = malloc(sizeOf(Trie));
-			t.next[index] = &newT;
+		//char *truncatedS = truncate(s);
+		truncate(s);
+		s++;
+		if (t->next[index] == NULL) {
+			printf("got here");
+			Trie newT = malloc(sizeof(Trie));
+			t->next[index] = &newT;
 		}
-		addword(t.next[index], truncatedS);
+		addword(*t->next[index], s);
 	} else {
-		t.flag = TRUE;
+		t->flag = TRUE;
 	}
 }
 
-boolean checkWord(Trie t, char *s) {
+boolean checkword(Trie t, char *s) {
+	printf("%s\n", s);
 	boolean b;
 	if (t == NULL) {
 		b = FALSE;
 	} else if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		char *truncatedS = truncate(s);
-		Trie nextTrie = t.next[index];
-		b = checkWord(nextTrie, truncatedS);
+		//char *truncatedS = truncate(s);
+		truncate(s);
+		s++;
+		Trie nextTrie = *t->next[index];
+		b = checkword(nextTrie, s);
 	} else {
-		if (t.flag == TRUE) { 
+		if (t->flag == TRUE) { 
 			b = TRUE; 
 		} else {
 			b = FALSE;
@@ -83,7 +136,7 @@ boolean checkWord(Trie t, char *s) {
 	return b;
 }
 
-void delWord(Trie t, char *s) {
+void delword(Trie t, char *s) {
 	char currChar = s[0];
 	if (s[0] != '\0') {
 		int index = convertToIndex(currChar);
@@ -94,14 +147,20 @@ void delWord(Trie t, char *s) {
 	}
 }
 
-//Returns a new string - same as s but with its first character removed
-(char *) truncate(char *s) {
-	return substring(s, 1, strlen(s));
+void truncate (char *s) {
+	s[0] = '\0';
 }
 
+/*
+//Returns a new string - same as s but with its first character removed
+char * truncate(char *s) {
+	return substring(s, 1, strlen(s));
+}
+*/
+
 //Returns substring of s from startingIndex to the end of the string
-(char *) substring(char *s, int startingIndex, int length) {
-	char *subString;
+char * substring(char *s, int startingIndex, int length) {
+	char *subString = NULL;
 	strncpy(subString, s + startingIndex, length);
 	return subString;
 }
@@ -136,3 +195,4 @@ int convertToIndex(char c) {
 	if (c == 'z' || c == 'Z') { index = 25; }
 	return index;
 }
+
