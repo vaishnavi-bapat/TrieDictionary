@@ -84,7 +84,14 @@ boolean checkWord(Trie t, char *s) {
 }
 
 void delWord(Trie t, char *s) {
-
+	char currChar = s[0];
+	if (s[0] != '\0') {
+		int index = convertToIndex(currChar);
+		char *truncatedS = truncate(s);
+		delword(t.next[index], truncatedS);
+	} else {
+		t.flag = TRUE;
+	}
 }
 
 //Returns a new string - same as s but with its first character removed
@@ -129,4 +136,3 @@ int convertToIndex(char c) {
 	if (c == 'z' || c == 'Z') { index = 25; }
 	return index;
 }
-
