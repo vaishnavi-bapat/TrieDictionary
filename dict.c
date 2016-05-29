@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <assert.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -100,6 +101,8 @@ void addword(Trie t, char *s) {
 			//printf("got here");
 			Trie newT = newEmptyTrie();//malloc(sizeof(Trie));
 			t->next[index] = &newT;
+			printf("After calling: %p\n", &newT);
+			assert(*t->next[index] == newT);
 			addword(*t->next[index], s);
 		}
 	} else {
@@ -116,12 +119,17 @@ boolean checkword(Trie t, char *s) {
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
 		printf("got here\n");
+		if (t == NULL) {
+			printf("null trie..\n");
+		} else {
+			printf("not null..\n");
+		}
 		if (t->next[index] == NULL) {
 			printf("cond1\n");
 			b = FALSE;
 		} else {
 			printf("cond2\n");
-			truncate(s);
+			//truncate(s);
 			s++;
 			b = checkword(*t->next[index], s);
 		}
@@ -141,19 +149,21 @@ Trie newEmptyTrie() {
 	for (i = 0; i < 26; i++) {
 		newEmptyTrie->next[i] = NULL;
 	}
+	printf("Within call: %p\n", newEmptyTrie);
 	return newEmptyTrie;
 }
 
 void delword(Trie t, char *s) {
-	char currChar = s[0];
+	printf("%s\n", s);
 	if (s[0] != '\0') {
-		int index = convertToIndex(currChar);
-		//char *truncatedS = truncate(s);
+		int index = convertToIndex(s[0]);
 		truncate(s);
 		s++;
+		printf("got here!\n");
 		delword(*t->next[index], s);
 	} else {
 		t->flag = FALSE;
+		printf("Deleted!\n");
 	}
 }
 
