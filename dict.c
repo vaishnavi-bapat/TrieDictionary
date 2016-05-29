@@ -51,7 +51,7 @@ boolean checkword(Trie t, char *s);
 void delword(Trie t, char *s);
 
 void truncate (char *s);
-Trie newEmptyTrie();
+void emptyTrieArray(Trie t);
 int convertToIndex(char c);
 
 int main(int argc, char const *argv[])
@@ -60,6 +60,7 @@ int main(int argc, char const *argv[])
 	//intialising dictionary (initDictA = <Flag:B, ntla>)
 	Trie dictionary = malloc(sizeof(trie)); //newEmptyTrie();//malloc(sizeof(Trie));
 	printf("Initial node at: %p\n", &dictionary);
+	emptyTrieArray(dictionary);
 
 	
 	char type = 'x';
@@ -97,17 +98,20 @@ int main(int argc, char const *argv[])
 }
 
 void addword(Trie t, char *s) {
-	//printf("%s\n", s);
+	printf("%s\n", s);
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);
-		truncate(s);
-		s++;
+		//truncate(s);
 		if (t->next[index] == NULL) {
+			printf("in if\n");
 			//Trie newT = malloc(sizeof(*newEmptyTrie));//newEmptyTrie();//malloc(sizeof(Trie));
 			t->next[index] = malloc(sizeof(trie));
+			emptyTrieArray(t->next[index]);
 			printf("Creating new node at: %p\n", &t->next[index]);
 			//assert(t->next[index] == newT);
 		} 
+		printf("past if\n");
+		s++;
 		addword(t->next[index], s);
 	} else {
 		t->flag = TRUE;
@@ -142,14 +146,12 @@ boolean checkword(Trie t, char *s) {
 	return b;
 }
 
-Trie newEmptyTrie() {
-	Trie newEmptyTrie = malloc(sizeof(*newEmptyTrie));
+void emptyTrieArray(Trie t) {
+	printf("Within call: %p\n", t);
 	int i = 0;
 	for (i = 0; i < 26; i++) {
-		newEmptyTrie->next[i] = NULL;
+		t->next[i] = NULL;
 	}
-	printf("Within call: %p\n", newEmptyTrie);
-	return newEmptyTrie;
 }
 
 void delword(Trie t, char *s) {
