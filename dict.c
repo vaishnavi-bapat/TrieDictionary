@@ -1,4 +1,6 @@
 //dict.c
+//Clinton Hadinata and Vaishnavi Bapat
+//cs2111 2016
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,24 +69,27 @@ int main(int argc, char const *argv[])
 //post: {P(t,s) && unchangedAdd(t,t0,s)}
 void addword(Trie t, char *s) {
 	if (s[0] != '\0') {
-		int index = convertToIndex(s[0]); //index sets the path for recursion to go through
-		//since it is properly mapped to from s[0], this will ensure that only the correct sequence of
-		//trie nodes (based on the characters of s) will be travelled to /new nodes created for.
+		int index = convertToIndex(s[0]); //index sets the path for recursion to go 
+		//through since it is properly mapped to from s[0], this will ensure that 
+		//only the correct sequence of trie nodes (based on the characters of s) 
+		//will be travelled to /new nodes created for.
 		if (t->next[index] == NULL) {
-			t->next[index] = malloc(sizeof(trie)); 	//Creates a new trie node 
-			emptyTrieArray(t->next[index]);			//sets next array to NETA
-			t->next[index]->flag = FALSE;			//sets flag to FALSE
+			t->next[index] = malloc(sizeof(trie));//Creates a new trie node 
+			emptyTrieArray(t->next[index]);		//sets next array to NETA
+			t->next[index]->flag = FALSE;		//sets flag to FALSE
 				//flag is never set to true unless we've reached end of word
-				//this ensures we are never adding any new words to the dictionary
-				//and thus unchangedAdd(t,t0,s) holds.
+				//this ensures we are never adding any new words to the 
+				//dictionary and thus unchangedAdd(t,t0,s) holds.
 		} 
 		s++;	//truncates s (using pointer arithmetic)
-		addword(t->next[index], s); //recurses down the right path, as explained above
+		addword(t->next[index], s); 
+		//recurses down the right path, as explained above
 	} else {
 		// Only once s has been truncated to null character do we end up here
-		t->flag = TRUE; //At this point, because of all the above assertions, we would be at 
-						//the trie node that the last character's associated node is pointing at.
-						//Setting the flag to true adds it to the dictionary and P(t,s) holds.
+		t->flag = TRUE; //At this point, because of all the above assertions, we 
+				//would be at the trie node that the last character's
+				//associated node is pointing at. Setting the flag to 
+				//true adds it to the dictionary and thus P(t,s) holds.
 	}
 }
 
@@ -96,28 +101,29 @@ boolean checkword(Trie t, char *s) {
 	boolean b = FALSE;
 
 	if (s[0] != '\0') {
-		int index = convertToIndex(s[0]);//index sets the path for recursion to go through
-		//since it is properly mapped to from s[0], this will ensure that only the correct sequence of
-		//trie nodes (based on the characters of s) will be travelled to.
+		int index = convertToIndex(s[0]);//index sets the path for recursion to go
+		//through since it is properly mapped to from s[0], this will ensure 
+		//that only the correct sequence of trie nodes (based on the characters 
+		//of s) will be travelled to.
 		if (t->next[index] == NULL) {
 			b = FALSE;	//this is if we've hit a null, but the word hasn't ended yet, 
-						//hence the word does not exist in this trie representation
-						//and postcondition holds
+					//hence the word does not exist in this trie representation
+					//and postcondition holds
 		} else {
 			s++;	//truncates s (using pointer arithmetic)
 			b = checkword(t->next[index], s);	
-			//if not yet hit null, keep recursing down the trie (correctly, as explained above)
+			//if not yet hit null, keep recursing down the trie
 		}
 	} else {	//i.e. if (s[0] == '\0')
 		// Only once s has been truncated to null character do we end up here
 		if (t->flag == TRUE) { 
-			b = TRUE; 	//this is if the representation of all the characters exists in the 
-						//right sequence and the flag is true, hence the word is in the dict
-						//and postcondition holds
+			b = TRUE; 	//this is if the representation of all the characters 
+					//exists in the right sequence and the flag is true, hence
+					//the word is in the dict and postcondition holds
 		} else {
-			b = FALSE;	//this is if the representation of all the characters exists in the 
-						//right sequence and the flag is false, hence the word is not in the dict
-						//and postcondition holds
+			b = FALSE;	//this is if the representation of all the characters 
+					//exists in the right sequence and the flag is false, hence
+					//the word is not in the dict and postcondition holds
 		}
 	}
 	return b;
@@ -128,17 +134,19 @@ boolean checkword(Trie t, char *s) {
 //Post: {~P(t,s) && unchangedDel(t,t0,s)}
 void delword(Trie t, char *s) {
 	if (s[0] != '\0') {
-		int index = convertToIndex(s[0]);//index sets the path for recursion to go through
-		//since it is properly mapped to from s[0], this will ensure that only the correct sequence of
-		//trie nodes (based on the characters of s) will be travelled to.
+		int index = convertToIndex(s[0]);//index sets the path for recursion to go
+		//through since it is properly mapped to from s[0], this will ensure that
+		//only the correct sequence of trie nodes (based on the characters of s) 
+		//will be travelled to.
 		s++;		//truncates s (using pointer arithmetic)
 		delword(t->next[index], s); //recurses down correct path
 	} else {
-		t->flag = FALSE;	//At this point, because of all the above assertions, we would be at 
-							//the trie node that s0's last character's associated node is pointing at.
-							//Setting the flag to false removes it from the dictionary and thus
-							//P(t,s) holds, and because we have only travelled down the right path 
-							//and no other flags change except this one, unchangedDel(t,t0,s) holds.
+		t->flag = FALSE;	//At this point, because of all the above assertions, 
+				//we would be at the trie node that s0's last character's associated
+				//node is pointing at. Setting the flag to false removes it from the
+				//dictionary and thus P(t,s) holds, and because we have only 
+				//travelled down the right path and no other flags change except 
+				//this one, unchangedDel(t,t0,s) holds.
 	}
 }
 
