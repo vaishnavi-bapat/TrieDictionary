@@ -135,6 +135,9 @@ boolean checkword(Trie t, char *s) {
 void delword(Trie t, char *s) {
 	if (s[0] != '\0') {
 		int index = convertToIndex(s[0]);//index sets the path for recursion to go
+        if (t->next[index] == NULL) {
+            return;
+        }
 		//through since it is properly mapped to from s[0], this will ensure that
 		//only the correct sequence of trie nodes (based on the characters of s) 
 		//will be travelled to.
